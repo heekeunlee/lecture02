@@ -2,15 +2,12 @@ import { motion } from 'framer-motion';
 import {
   Server,
   Layout,
-  Cpu,
   Zap,
-  MessageSquare,
   Globe,
   Database,
   Code2,
   Sparkles,
   Bot,
-  Brain,
   Terminal,
 } from 'lucide-react';
 
