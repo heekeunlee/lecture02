@@ -5,8 +5,8 @@
   --text-primary: #1d1d1f;
   --text-secondary: #86868b;
   --border: rgba(0,0,0,0.1);
-  --font-main: 'Outfit', sans-serif;
-  --font-content: 'Inter', sans-serif;
+  --font-main: 'Outfit', 'Inter', 'Apple SD Gothic Neo', sans-serif;
+  --font-content: 'Inter', 'Apple SD Gothic Neo', sans-serif;
 }
 
 [data-theme='dark'] {
@@ -61,6 +61,12 @@ body {
   opacity: 0.9;
 }
 
+.header-tag-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .header-tag {
   font-family: var(--font-main);
   font-size: 1.1rem;
@@ -75,35 +81,6 @@ body {
   text-align: center;
 }
 
-.one-line-definition {
-  max-width: 920px;
-  margin: 0 auto 1.4rem;
-  border: 1px solid rgba(0,113,227,0.28);
-  background: #f0f7ff;
-  border-radius: 20px;
-  padding: 1.25rem 1.5rem;
-  text-align: left;
-}
-
-.one-line-definition span {
-  display: block;
-  color: var(--accent);
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 0.45rem;
-}
-
-.one-line-definition strong {
-  display: block;
-  color: var(--text-primary);
-  font-size: clamp(1.12rem, 2vw, 1.45rem);
-  line-height: 1.42;
-  font-weight: 900;
-  word-break: keep-all;
-}
-
 h1 {
   font-size: clamp(2rem, 5vw, 3.2rem);
   font-weight: 900;
@@ -111,12 +88,15 @@ h1 {
   line-height: 1.15;
   margin-bottom: 1.5rem;
   color: var(--text-primary);
+  word-break: keep-all;
 }
 
 .subtitle {
   font-size: 1.25rem;
   color: var(--text-secondary);
   font-weight: 400;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .lesson-meta {
@@ -149,6 +129,12 @@ section h2 {
   margin-bottom: 2rem;
 }
 
+section h2 mark {
+  background: linear-gradient(180deg, transparent 56%, #fef08a 56%);
+  color: inherit;
+  padding: 0 0.08em;
+}
+
 .section-label {
   width: fit-content;
   border: 1px solid #d1d5db;
@@ -166,112 +152,192 @@ section h2 {
   color: var(--accent);
 }
 
-.card-grid {
+.section-intro {
+  max-width: 860px;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  color: var(--text-secondary);
+  font-family: var(--font-content);
+  font-size: 1.12rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+/* Prompt Comparison Cards */
+.prompt-compare-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+  margin-bottom: 4rem;
 }
 
-.card {
-  background: var(--bg-secondary);
+.prompt-card {
   border: 1px solid var(--border);
-  padding: 2rem;
   border-radius: 24px;
-  transition: transform 0.3s ease;
+  padding: 2rem;
+  background: var(--bg-secondary);
 }
 
-.card:hover {
-  transform: translateY(-8px);
+.prompt-card.general {
+  border-left: 8px solid #86868b;
 }
 
-.card h3 {
-  font-size: 1.5rem;
-  font-weight: 800;
+.prompt-card.engineering {
+  border-left: 8px solid var(--accent);
+  background: #f0f7ff;
+}
+
+.prompt-card span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.prompt-card.engineering span {
+  color: var(--accent);
+}
+
+.prompt-card h3 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  word-break: keep-all;
+}
+
+.prompt-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* Deep Dive Panel (from Lecture 01) */
+.deep-dive {
+  margin-top: 3rem;
+  padding: 3rem;
+  border: 1px solid rgba(0,113,227,0.22);
+  background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+  border-radius: 32px;
+}
+
+.deep-dive-heading h3 {
+  font-size: 2rem;
+  font-weight: 900;
   margin-bottom: 1rem;
 }
 
-.card p {
-  color: var(--text-secondary);
-  font-family: var(--font-content);
+.yield-case-panel {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 12px 34px rgba(15,23,42,0.06);
 }
 
-.lesson-timeline {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
-  margin-top: 2rem;
+.yield-case-panel.prompt-panel {
+  background: #0f172a;
+  color: white;
 }
 
-.timeline-step {
-  border: 1px solid rgba(0,113,227,0.24);
-  background: #f0f7ff;
-  border-radius: 16px;
-  padding: 1rem;
+.yield-case-panel.prompt-panel h4, 
+.yield-case-panel.prompt-panel p {
+  color: white;
 }
 
-.timeline-step strong {
+.yield-case-panel span {
   display: block;
   color: var(--accent);
-  font-size: 1.35rem;
+  font-size: 0.8rem;
   font-weight: 900;
-}
-
-.concept-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.concept-card {
-  border: 1px solid var(--border);
-  background: var(--bg-secondary);
-  border-radius: 20px;
-  padding: 1.5rem;
-}
-
-.concept-card h4 {
-  font-size: 1.25rem;
-  font-weight: 900;
+  text-transform: uppercase;
   margin-bottom: 0.5rem;
 }
 
-.concept-card p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
+.yield-case-panel.prompt-panel span {
+  color: #38bdf8;
 }
 
-.philosophy-section {
+.yield-case-panel h4 {
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+
+/* Techniques Grid */
+.technique-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.technique-card {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  border-radius: 24px;
+}
+
+.technique-card h4 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.technique-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.technique-card li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+  font-weight: 600;
+}
+
+.technique-card li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+footer.philosophy-section {
   background: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%);
   color: white;
   padding: 4rem 2rem;
   border-radius: 32px;
   text-align: center;
+  margin-top: 4rem;
 }
 
-.philosophy-section h2 {
+footer.philosophy-section h2 {
   color: white;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  font-weight: 900;
   margin-bottom: 1.5rem;
 }
 
-.philosophy-section p {
-  font-size: 1.2rem;
+footer.philosophy-section p {
+  font-size: 1.1rem;
   max-width: 800px;
   margin: 0 auto;
   opacity: 0.9;
 }
 
 @media (max-width: 768px) {
-  .app-container {
-    padding: 1rem;
-  }
-  .header-top {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .header-tag {
-    text-align: center;
-    margin-top: 1rem;
+  .prompt-compare-grid {
+    grid-template-columns: 1fr;
   }
 }
