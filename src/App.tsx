@@ -12,29 +12,80 @@ import {
   Terminal,
   Activity,
   ArrowRight,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 
 const lessonFlow = [
-  { time: '5분', label: '공정 지식과 AI' },
-  { time: '10분', label: '일반 vs 엔지니어 프롬프트' },
-  { time: '15분', label: 'TCREI & Pseudo-Code' },
-  { time: '10분', label: '공정 실무 사례 적용' },
+  { time: '5분', label: '공정 지식과 AI 협업' },
+  { time: '10분', label: '엔지니어 마인드셋 비교' },
+  { time: '10분', label: 'TCREI 프레임워크 심화' },
+  { time: '10분', label: 'Pseudo-Code 설계 실전' },
+  { time: '5분', label: '실무 사례 & 정리' },
 ];
 
 const promptComparison = [
   {
     type: 'general',
-    title: '일반적인 프롬프트 (비효율적)',
-    context: '공정 데이터를 분석하고 싶을 때',
-    prompt: '"CVD 공정의 두께 데이터를 분석해서 그래프로 그려줘. 이상한 부분이 있으면 알려줘."',
-    result: 'AI가 일반적인 평균값이나 추세선만 그려줌. 엔지니어가 진짜 궁금한 "특정 Lot의 산포"나 "챔버 간 편차"는 놓치기 쉬움.',
+    title: '케이스 1: 수율 분석',
+    prompt: '"이번 달 반도체 수율이 왜 떨어졌는지 분석해줘."',
+    result: 'AI: "일반적으로 수율 하락 원인은 장비 고장, 원자재 불량, 작업자 실수 등이 있습니다. 데이터를 주시면 분석해 드릴게요."',
+    analysis: '현상을 나열할 뿐 구체적인 액션이 불가능함.',
   },
   {
     type: 'engineering',
-    title: '엔지니어의 프롬프트 (효과적)',
-    context: '첨단 공정 현장의 언어 적용',
-    prompt: '"CVD 두께 로그(CSV)에서 Lot별 Thickness 산포를 Box plot으로 시각화해줘. 목표치 120nm ± 5nm를 벗어난 Outlier는 빨간색으로 표시하고, 해당 Lot의 압력(Pressure) 상관관계를 분석해줘. 결과는 엔지니어 리뷰용 대시보드 형태로 구성해."',
-    result: '명확한 기준(±5nm)과 분석 도구(Box plot, 상관분석), 출력 형식(대시보드)이 포함되어 즉시 실무에 사용 가능한 수준의 코드가 생성됨.',
+    title: '케이스 1: 수율 분석',
+    prompt: '"Photo 공정의 PR 도포 두께와 Yield 간의 상관관계를 분석해줘. 특히 PR 점도(Viscosity)가 상한치를 초과했을 때의 수율 하락 폭을 계산하고, 이를 산점도로 시각화해줘."',
+    result: 'AI: (Python 코드 생성) 상관계수 계산, 점도 임계값 기준 필터링, 하락 폭 수치화 및 산점도 시각화 코드 제공.',
+    analysis: '명확한 인자(PR 점도)와 분석 방식(상관관계)이 포함됨.',
+  },
+  {
+    type: 'general',
+    title: '케이스 2: 장비 이상 감지',
+    prompt: '"에칭 장비가 이상한 것 같아. 로그 파일 확인해줘."',
+    result: 'AI: "로그 파일의 어떤 부분을 확인해야 하나요? 에러 코드를 알려주세요."',
+    analysis: '질문에 질문으로 답함.',
+  },
+  {
+    type: 'engineering',
+    title: '케이스 2: 장비 이상 감지',
+    prompt: '"Dry Etch 장비의 챔버 압력 로그에서 60초 주기로 발생하는 압력 변동(Pressure Hunting) 패턴을 탐지해줘. 정상 범위를 5% 초과하는 구간을 감지하고, 해당 구간의 MFC(Mass Flow Controller) 유량 변화와 매칭시켜줘."',
+    result: 'AI: (시계열 분석 로직) 이동평균 기반 변동 탐지, MFC 데이터 병합 및 상관관계 분석 대시보드 초안 생성.',
+    analysis: '주기성 패턴(Hunting)과 비교 대상(MFC 유량)을 구체화함.',
+  },
+  {
+    type: 'general',
+    title: '케이스 3: 품질 보고서',
+    prompt: '"불량 이미지 분류한 결과로 보고서 써줘."',
+    result: 'AI: "분류 결과가 어떻게 되나요? 총 개수와 유형별 개수를 알려주시면 작성해 드릴게요."',
+    analysis: '단순 텍스트 요약에 그침.',
+  },
+  {
+    type: 'engineering',
+    title: '케이스 3: 품질 보고서',
+    prompt: '"AOI 검사에서 검출된 Mura 불량 200건의 좌표를 기반으로 Heatmap을 그려줘. 불량이 집중되는 Glass 위치(Top-Left 등)를 식별하고, 전주 대비 불량 발생 빈도 변화율을 포함한 주간 품질 보고서 초안을 HTML로 만들어줘."',
+    result: 'AI: (시각화 로직) 좌표 데이터 기반 Heatmap 생성, 위치별 통계 추출, 변화율 계산 및 세련된 웹 보고서 레이아웃 생성.',
+    analysis: '공간 정보(좌표)와 비즈니스 지표(변화율)를 결합함.',
+  },
+];
+
+const pseudoExamples = [
+  {
+    title: '일반적인 지시 (Natural Language)',
+    content: '"데이터에서 수율 낮은 것만 찾아서 메일로 보내줘."',
+    diff: 'AI는 "어떤 데이터?" "낮은 기준은?" "메일 본문은?"을 계속 물어보거나 임의로 작성하여 결과가 부정확함.',
+  },
+  {
+    title: '슈도 프롬프트 지시 (Pseudo-Code)',
+    content: `[SETTING] THRESHOLD = 92.5%
+[STEP 1] DATA = LOAD('daily_yield.csv')
+[STEP 2] TARGET = DATA where Yield < THRESHOLD
+[STEP 3] IF len(TARGET) > 0:
+    SUMMARY = Group TARGET by 'Process_ID'
+    SEND_ALERT(to='PI팀', body=SUMMARY)
+[STEP 4] ELSE:
+    PRINT('정상 범위 내')`,
+    diff: 'AI는 논리 구조(조건문, 반복문)를 즉시 파악하여, 에러 없는 완벽한 자동화 스크립트를 생성함.',
   },
 ];
 
@@ -75,125 +126,206 @@ export default function App() {
         </motion.div>
       </header>
 
+      {/* 01. Mindset Expansion */}
       <section>
-        <span className="section-label">01. 마인드셋</span>
-        <h2><Zap size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 엔지니어의 언어가 <mark>최고의 프롬프트</mark>입니다</h2>
+        <span className="section-label">01. 마인드셋 비교</span>
+        <h2><Zap size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 엔지니어의 언어가 <mark>결과의 차이</mark>를 만듭니다</h2>
         <p className="section-intro">
-          AI는 공정의 물리적 현상을 알지 못합니다. 하지만 엔지니어가 "챔버 간 편차(Inter-chamber variation)", "수율 하락(Yield drop)", "산포(Dispersion)"와 같은 현장 용어를 사용해 명확한 가이드라인을 주면, AI는 그 즉시 수만 줄의 코드를 정확히 생성해냅니다.
+          같은 의도를 가지고 있어도, 일반적인 대화형 프롬프트와 엔지니어링 프롬프트는 AI가 생성하는 결과물의 품질에서 하늘과 땅 차이를 보입니다.
         </p>
         
-        <div className="prompt-compare-grid">
+        <div className="prompt-compare-grid" style={{ gridTemplateColumns: '1fr', gap: '3rem' }}>
           {promptComparison.map((item, index) => (
             <motion.div 
               key={index} 
-              className={`prompt-card ${item.type}`}
-              whileHover={{ y: -5 }}
+              className="comparison-row"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '3rem' }}
             >
-              <span>{item.type === 'engineering' ? <Target size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} /> : <MessageSquare size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} />}{item.title}</span>
-              <h3>{item.context}</h3>
-              <div className="prompt-box">
-                {item.prompt}
+              <div className={`prompt-card ${item.type === 'general' ? 'general' : 'engineering'}`} style={{ height: '100%' }}>
+                <span>{item.type === 'engineering' ? <Target size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} /> : <MessageSquare size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} />}{item.title} - {item.type === 'general' ? '일반 프롬프트' : '엔지니어 프롬프트'}</span>
+                <div className="prompt-box" style={{ minHeight: '120px' }}>
+                  {item.prompt}
+                </div>
+                <div style={{ marginTop: '1.5rem', padding: '1rem', background: item.type === 'general' ? '#fff1f2' : '#f0fdf4', borderRadius: '12px' }}>
+                  <strong style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem' }}>AI의 반응:</strong>
+                  <p style={{ fontSize: '0.9rem', color: '#334155' }}>{item.result}</p>
+                </div>
               </div>
-              <p style={{ marginTop: '1.5rem', fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                {item.result}
-              </p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }}>
+                <h4 style={{ color: item.type === 'general' ? '#be123c' : '#15803d', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {item.type === 'general' ? <AlertCircle size={20} /> : <CheckCircle2 size={20} />}
+                  핵심 분석
+                </h4>
+                <p style={{ marginTop: '0.5rem', fontWeight: 600 }}>{item.analysis}</p>
+                <p style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                  {item.type === 'general' 
+                    ? "AI는 엔지니어의 '의도'를 짐작할 뿐, 실제 동작하는 도구를 만들 준비가 되지 않았습니다." 
+                    : "AI는 엔지니어의 '기준'과 '절차'를 즉시 파악하여, 현장에서 바로 쓸 수 있는 분석 스크립트를 생성합니다."}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
 
+      {/* 02. TCREI Deep Dive */}
       <section>
         <span className="section-label">02. 프롬프트 기술: TCREI</span>
-        <h2><Brain size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 구글이 권장하는 <mark>TCREI 프레임워크</mark></h2>
-        <p className="section-intro">작업지시서를 작성할 때 다음 5가지 요소를 포함하면 AI의 답변 품질이 비약적으로 상승합니다.</p>
+        <h2><Brain size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 구글이 강조하는 <mark>프롬프트 5대 요소</mark></h2>
+        <p className="section-intro">TCREI는 AI에게 주는 가장 완벽한 '작업지시서'의 뼈대입니다. 각 요소가 빠졌을 때와 들어갔을 때의 결과물을 비교해보세요.</p>
         
         <div className="technique-grid">
           <div className="technique-card">
             <h4><Activity size={20} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Task (작업)</h4>
+            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>AI가 수행해야 할 구체적인 행동</p>
             <ul>
-              <li>"분석해줘"보다는 구체적으로</li>
-              <li>"이상 탐지 로직을 구현해줘"</li>
+              <li className="bad">"분석해줘"</li>
+              <li className="good">"이상 구간을 탐지하고 보고서를 써줘"</li>
             </ul>
           </div>
           <div className="technique-card">
             <h4><Database size={20} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Context (맥락)</h4>
+            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>프로젝트의 배경과 목표</p>
             <ul>
-              <li>"반도체 에칭 공정 데이터야"</li>
-              <li>"신입 엔지니어가 볼 차트야"</li>
+              <li className="bad">"데이터야"</li>
+              <li className="good">"신규 라인 셋업을 위한 센서 데이터야"</li>
             </ul>
           </div>
           <div className="technique-card">
             <h4><Bot size={20} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Role (역할)</h4>
+            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>AI에게 부여하는 전문적인 페르소나</p>
             <ul>
-              <li>"10년차 공정기술 전문가처럼"</li>
-              <li>"데이터 사이언티스트처럼"</li>
+              <li className="bad">없음</li>
+              <li className="good">"15년차 수율 개선 담당 파트장처럼 말해줘"</li>
             </ul>
           </div>
           <div className="technique-card">
             <h4><FileText size={20} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Exemplar (예시)</h4>
+            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>원하는 결과물의 구체적인 예시</p>
             <ul>
-              <li>"이런 식으로 출력해줘 (예시 첨부)"</li>
-              <li>"A와 B를 비교하는 방식이면 좋아"</li>
+              <li className="bad">없음</li>
+              <li className="good">"표의 첫 열은 날짜, 두 번째 열은 불량률"</li>
             </ul>
           </div>
           <div className="technique-card">
             <h4><Code2 size={20} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Input (입력)</h4>
+            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>데이터의 형식, 제약 사항 등</p>
             <ul>
-              <li>"CSV 파일의 첫 행은 헤더야"</li>
-              <li>"단위는 nm와 degC야"</li>
+              <li className="bad">없음</li>
+              <li className="good">"CSV 형식, 헤더 포함, 단위는 mm"</li>
             </ul>
           </div>
         </div>
-      </section>
 
-      <section>
-        <span className="section-label">03. 고급 기술: Pseudo-Prompt</span>
-        <h2><Terminal size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 로직을 설계하는 <mark>의사코드(Pseudo-code)</mark> 기법</h2>
-        <p className="section-intro">복잡한 공정 분석 로직은 코딩을 하듯 구조적으로 명령을 내리는 것이 유리합니다.</p>
-        
-        <div className="yield-case-panel prompt-panel">
-          <span><Sparkles size={16} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} /> 고급 프롬프트 예시</span>
-          <h4>의사코드 스타일의 지시서</h4>
-          <div className="prompt-box" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
-{`[STEP 1] Data Load: sensor_log.csv 파일을 읽는다.
-[STEP 2] Pre-processing: 'temp' 컬럼에서 -999인 이상치를 평균값으로 대체한다.
-[STEP 3] Calculation: 5-point 이동평균을 계산하여 'ma_temp' 컬럼을 추가한다.
-[STEP 4] Detection: ma_temp가 UCL(150도)을 초과하는 시점을 탐지한다.
-[STEP 5] Output: 탐지된 시점의 Timestamp와 설비 ID를 표로 출력한다.`}
+        <div className="deep-dive" style={{ marginTop: '3rem' }}>
+          <h3>TCREI 적용 전 vs 후 결과 비교</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
+            <div className="yield-case-panel" style={{ background: '#f8fafc' }}>
+              <span style={{ color: '#64748b' }}>미적용 (일반 지시)</span>
+              <p style={{ fontStyle: 'italic', margin: '1rem 0' }}>"센서 데이터 분석해서 문제 있으면 알려줘."</p>
+              <div style={{ padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '12px', background: 'white' }}>
+                <strong style={{ fontSize: '0.8rem' }}>AI 출력 예상:</strong>
+                <p style={{ fontSize: '0.85rem' }}>"어떤 데이터를 분석할까요? 구체적인 파일이나 수치를 알려주시면 문제점을 찾아보겠습니다." (답변 정체)</p>
+              </div>
+            </div>
+            <div className="yield-case-panel" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+              <span style={{ color: '#15803d' }}>TCREI 적용 (엔지니어 지시)</span>
+              <p style={{ fontStyle: 'italic', margin: '1rem 0' }}>"네가 수율 분석 전문가(R)로서, 이번 Dry Etch 로그(I)에서 압력 변동 구간을 탐지(T)해줘. 셋업 초기 데이터(C)니까 평소보다 기준을 타이트하게 잡고, 결과는 [시간-설비-압력] 순서의 표(E)로 보여줘."</p>
+              <div style={{ padding: '1rem', border: '1px solid #bbf7d0', borderRadius: '12px', background: 'white' }}>
+                <strong style={{ fontSize: '0.8rem' }}>AI 출력 예상:</strong>
+                <p style={{ fontSize: '0.85rem' }}>"알겠습니다. 셋업 초기 데이터임을 감안하여 임계값의 2%를 초과하는 변동을 탐지하겠습니다. (즉시 분석 코드 및 표 생성)"</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* 03. Pseudo-Prompt Expansion */}
+      <section>
+        <span className="section-label">03. 고급 기술: Pseudo-Prompt</span>
+        <h2><Terminal size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 코딩 없이 <mark>로직을 설계</mark>하는 법</h2>
+        <p className="section-intro">
+          슈도 프롬프트(Pseudo-Prompt)는 자연어와 프로그래밍 언어의 중간 형태입니다. 복잡한 문제를 단계별(Step-by-step)로 쪼개어 지시하면 AI가 훨씬 더 정교한 논리 구조를 가진 결과물을 만들어냅니다.
+        </p>
+
+        <div className="prompt-compare-grid" style={{ gridTemplateColumns: '1fr', gap: '2rem' }}>
+          {pseudoExamples.map((item, index) => (
+            <div key={index} className="yield-case-panel" style={{ padding: '2.5rem' }}>
+              <h4 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: index === 0 ? 'var(--text-secondary)' : 'var(--accent)' }}>
+                {item.title}
+              </h4>
+              <div className="prompt-box" style={{ background: index === 0 ? '#f8fafc' : '#0f172a', color: index === 0 ? 'inherit' : '#38bdf8' }}>
+                {item.content}
+              </div>
+              <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#f1f5f9', borderRadius: '12px', borderLeft: '4px solid #64748b' }}>
+                <strong>차이점:</strong> {item.diff}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="deep-dive" style={{ background: '#fff' }}>
+          <h3>현장 엔지니어를 위한 슈도 프롬프트 작성 3원칙</h3>
+          <div className="technique-grid" style={{ marginTop: '2rem' }}>
+            <div className="technique-card">
+              <h4>1. 변수 정의 (SET)</h4>
+              <p>기준이 되는 수치(Spec, Threshold)를 먼저 명시하세요. AI가 계산 로직에서 이 수치를 정확히 사용합니다.</p>
+            </div>
+            <div className="technique-card">
+              <h4>2. 단계별 분리 (STEP)</h4>
+              <p>데이터 로드 {'->'} 필터링 {'->'} 계산 {'->'} 출력의 과정을 STEP 단위로 나누어 지시하세요.</p>
+            </div>
+            <div className="technique-card">
+              <h4>3. 조건문 활용 (IF/ELSE)</h4>
+              <p>특정 상황(예: 불량이 발생했을 때만)에서 수행할 동작을 명확히 구분하세요.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 04. Case Study Expansion */}
       <section className="deep-dive">
         <div className="deep-dive-heading">
-          <span className="section-label">04. 실전 사례</span>
-          <h3>2차전지 전극 공정: 두께 불균일 원인 분석</h3>
-          <p>현장에서 발생하는 문제를 바이브 코딩 프롬프트로 해결하는 실제 흐름입니다.</p>
+          <span className="section-label">04. 실전 사례 심화</span>
+          <h3>디스플레이 패널 검사: 불량 패턴의 시각화</h3>
+          <p>단순히 "분석해줘"라고 했을 때와, 엔지니어링 프롬프트를 사용했을 때의 결과물 차이를 봅니다.</p>
         </div>
 
-        <div className="yield-case-panel">
-          <span>현장의 문제 (Problem)</span>
-          <h4>"코팅 이후 건조 과정에서 특정 구간의 두께가 계속 얇게 나옵니다."</h4>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            엔지니어는 수동으로 엑셀을 열어 롤러 속도와 온도를 매칭하며 반나절을 보냅니다.
-          </p>
-        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '3rem' }}>
+          <div className="yield-case-panel">
+            <span style={{ color: '#ef4444' }}>엔지니어 A (일반형)</span>
+            <div className="prompt-box" style={{ fontSize: '0.85rem' }}>
+              "검사 데이터 보고 불량 위치 좀 알려줘. 그리고 리포트 써줘."
+            </div>
+            <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem', textAlign: 'center' }}>
+              <ArrowRight size={24} style={{ color: '#be123c', transform: 'rotate(90deg)', marginBottom: '1rem' }} />
+              <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                <strong>AI 결과:</strong>
+                <p style={{ fontSize: '0.85rem', color: '#666' }}>
+                  "불량은 화면 중앙과 가장자리에 분포해 있습니다. 리포트 초안은 다음과 같습니다..."
+                </p>
+              </div>
+              <p style={{ marginTop: '0.5rem', color: '#be123c', fontWeight: 700 }}>→ 결과: 실무 활용 불가</p>
+            </div>
+          </div>
 
-        <div className="yield-case-panel prompt-panel">
-          <span>바이브 코딩 지시 (Prompt)</span>
-          <h4>엔지니어의 전문성이 담긴 지시</h4>
-          <p>
-            "건조 공정 데이터에서 Roll Speed와 Temperature를 독립 변수로, Coating Thickness를 종속 변수로 설정해서 다중 회귀 분석을 수행해줘. 두께 하락에 가장 큰 영향을 주는 인자를 찾고, 온도 편차가 3도 이상 벌어진 구간만 필터링해서 그래프에 음영 처리해줘. 보고서는 회의용 PPT에 바로 넣을 수 있게 깔끔한 HTML 형식을 원해."
-          </p>
-        </div>
-
-        <div className="yield-case-panel" style={{ border: '2px dashed var(--accent)', background: '#fff' }}>
-          <span>AI의 산출물 (After)</span>
-          <h4>분석 결과 대시보드 초안</h4>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <div style={{ flex: 1, height: '150px', background: '#f8fafc', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontWeight: 800 }}>회귀 분석 차트 (R²: 0.89)</div>
-            <ArrowRight size={24} style={{ alignSelf: 'center', color: 'var(--text-secondary)' }} />
-            <div style={{ flex: 1, height: '150px', background: '#f8fafc', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', fontWeight: 800 }}>이상 구간 (온도 편차 발생)</div>
+          <div className="yield-case-panel" style={{ border: '2px solid var(--accent)' }}>
+            <span style={{ color: 'var(--accent)' }}>엔지니어 B (바이브 코딩형)</span>
+            <div className="prompt-box" style={{ fontSize: '0.85rem', background: '#f0f7ff' }}>
+              "검사 데이터의 X, Y 좌표를 사용하여 패널 불량 분포 Heatmap을 생성해줘. 특히 Panel edge 10mm 이내의 불량만 별도로 카운트해서 비율을 계산해..."
+            </div>
+            <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem', textAlign: 'center' }}>
+              <ArrowRight size={24} style={{ color: 'var(--accent)', transform: 'rotate(90deg)', marginBottom: '1rem' }} />
+              <div style={{ padding: '1rem', background: '#f0f7ff', borderRadius: '12px' }}>
+                <strong>AI 결과:</strong>
+                <p style={{ fontSize: '0.85rem', color: '#15803d' }}>[Python 시각화 코드 & 정교한 히트맵 & 메일 초안 생성]</p>
+              </div>
+              <p style={{ marginTop: '0.5rem', color: '#15803d', fontWeight: 700 }}>→ 결과: 즉시 현장 적용 가능</p>
+            </div>
           </div>
         </div>
       </section>
@@ -205,16 +337,38 @@ export default function App() {
           {lessonFlow.map((step, index) => (
             <div key={index} className="timeline-step">
               <strong>{step.time}</strong>
-              <span>{step.label}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                {index === 0 && <Activity size={16} />}
+                {index === 1 && <Target size={16} />}
+                {index === 2 && <Brain size={16} />}
+                {index === 3 && <Terminal size={16} />}
+                {step.label}
+              </span>
             </div>
           ))}
         </div>
       </section>
 
       <footer className="philosophy-section">
-        <h2>"프롬프트는 엔지니어의<br />지식을 AI에게 전달하는 통로입니다."</h2>
-        <p>복잡한 수식과 코드를 직접 적으려 하지 마세요.<br />여러분의 공정 지식을 AI가 이해할 수 있는 '구조적인 언어'로 바꾸는 연습이 바이브 코딩의 80%입니다.</p>
+        <h2><Sparkles size={32} style={{ marginBottom: '1rem' }} /><br />"프롬프트 설계는<br />엔지니어의 새로운 설계도입니다."</h2>
+        <p>복잡한 코드는 AI에게 맡기고, 여러분은 현장의 전문성을<br />논리적인 단계로 쪼개어 전달하는 것에 집중하세요.<br />그것이 바로 바이브 코딩의 본질입니다.</p>
+        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <Bot size={24} />
+          <Code2 size={24} />
+          <Database size={24} />
+          <FileText size={24} />
+          <MessageSquare size={24} />
+          <Zap size={24} />
+        </div>
       </footer>
+
+      <style>{`
+        .bad { padding-left: 1.5rem; position: relative; color: #be123c; }
+        .bad::before { content: "✕"; position: absolute; left: 0; }
+        .good { padding-left: 1.5rem; position: relative; color: #15803d; }
+        .good::before { content: "✓"; position: absolute; left: 0; }
+        .comparison-row:last-child { border-bottom: none; }
+      `}</style>
     </div>
   );
 }
