@@ -31,6 +31,8 @@ const promptComparison = [
     prompt: '"이번 달 반도체 수율이 왜 떨어졌는지 분석해줘."',
     result: 'AI: "수율 하락의 일반적인 원인은 장비 유지보수 지연, 원자재 오염, 공정 파라미터 이탈 등이 있습니다. 구체적인 데이터를 업로드해주시면 상관관계를 분석해드릴 수 있습니다. 어떤 장비나 라인의 데이터를 확인해드릴까요?"',
     analysis: '현상을 나열하는 백과사전식 답변에 그칩니다. 엔지니어가 다시 데이터를 정제하고 구체적인 질문을 던져야 하는 번거로움이 발생하며, 실무적인 해결책을 도출하기까지 여러 번의 대화가 더 필요합니다.',
+    metrics: { action: 20, precision: 10, depth: 15 },
+    resultPreview: 'text',
   },
   {
     type: 'engineering',
@@ -38,6 +40,8 @@ const promptComparison = [
     prompt: '"Photo 공정의 PR 도포 두께와 Yield 간의 상관관계를 분석해줘. 특히 PR 점도(Viscosity)가 상한치인 15cp를 초과했을 때의 수율 하락 폭을 정량적으로 계산하고, 두 인자 간의 관계를 산점도(Scatter Plot)로 시각화해줘."',
     result: 'AI: (Python 스크립트 생성) "상관분석을 수행하겠습니다. 1) 데이터를 불러와 점도 15cp 초과 데이터만 필터링합니다. 2) 해당 구간의 평균 수율을 산출합니다. 3) 전체 데이터와 비교하여 수율 저하율을 계산합니다. 4) Seaborn을 활용해 점도와 수율의 산점도를 생성합니다." [즉시 실행 가능한 코드 제공]',
     analysis: '명확한 물리적 인자(점도), 임계값(15cp), 분석 방법론(상관분석), 시각화 방식(산점도)이 포함되어 있습니다. AI는 고민 없이 즉시 엔지니어가 원하는 통계 수치와 그래프를 출력합니다.',
+    metrics: { action: 95, precision: 90, depth: 85 },
+    resultPreview: 'chart',
   },
   {
     type: 'general',
@@ -45,6 +49,8 @@ const promptComparison = [
     prompt: '"에칭 장비가 이상한 것 같아. 로그 파일 확인해줘."',
     result: 'AI: "장비의 어떤 증상이 있나요? 에러 코드나 비정상적인 로그 메시지를 복사해서 주시면 분석해드릴 수 있습니다. 혹은 로그 파일의 형식을 알려주시면 제가 읽어볼 수 있습니다."',
     analysis: '엔지니어에게 "무엇이 이상한지"를 역으로 묻습니다. AI는 도구일 뿐, 엔지니어가 문제의 범위를 좁혀주지 않으면 방대한 로그 속에서 무엇을 찾아야 할지 스스로 판단하지 못합니다.',
+    metrics: { action: 10, precision: 5, depth: 5 },
+    resultPreview: 'question',
   },
   {
     type: 'engineering',
@@ -52,6 +58,8 @@ const promptComparison = [
     prompt: '"Dry Etch 장비의 챔버 압력 로그(Chamber_Pressure)에서 60초 주기로 발생하는 압력 변동(Pressure Hunting) 패턴을 탐지해줘. 정상 범위를 5% 초과하는 이상 구간을 감지하고, 해당 시점의 MFC(Mass Flow Controller) 가스 유량 데이터와 병합하여 상관관계를 시각화해줘."',
     result: 'AI: "시계열 이상 탐지 로직을 구현합니다. 1) FFT(고속 푸리에 변환)를 활용해 60초 주기성을 확인합니다. 2) 임계값 5%를 적용해 이상 시점을 인덱싱합니다. 3) MFC 로그와 타임스탬프 기준으로 병합(Merge)합니다. 4) 두 센서의 변화 추이를 시각화합니다." [이상 구간 목록 및 차트 생성]',
     analysis: '문제 현상(Pressure Hunting), 주기(60초), 탐지 기준(5%), 연관 데이터(MFC)를 구체적으로 지정했습니다. AI는 장비 엔지니어가 수작업으로 반나절 동안 할 업무를 10초 만에 완수합니다.',
+    metrics: { action: 90, precision: 95, depth: 90 },
+    resultPreview: 'time-series',
   },
   {
     type: 'general',
@@ -59,6 +67,8 @@ const promptComparison = [
     prompt: '"불량 이미지 분류한 결과로 보고서 써줘."',
     result: 'AI: "불량 유형별 개수와 비중을 알려주시면 보고서 초안을 작성해드리겠습니다. 예를 들어 Scratch 10건, Particle 20건 식의 정보가 필요합니다. 보고서에 특별히 포함하고 싶은 결론이 있나요?"',
     analysis: '단순한 텍스트 요약 비서 역할만 수행합니다. 엔지니어가 데이터를 가공해서 주어야 하며, 결과물의 깊이가 얕아 실제 보고용으로 쓰기엔 부적합합니다.',
+    metrics: { action: 30, precision: 20, depth: 25 },
+    resultPreview: 'list',
   },
   {
     type: 'engineering',
@@ -66,8 +76,47 @@ const promptComparison = [
     prompt: '"AOI 검사에서 검출된 Mura 불량 200건의 X, Y 좌표를 기반으로 Glass 내 위치별 Heatmap을 그려줘. 불량이 집중되는 영역(Edge/Center)을 식별하고, 전주 대비 발생 빈도 변화율을 계산하여 주간 품질 보고서 초안을 HTML 대시보드 형태로 만들어줘."',
     result: 'AI: "공간 분석 대시보드를 생성합니다. 1) 좌표 데이터를 기반으로 2D 히트맵을 생성합니다. 2) 영역별 불량 밀도를 계산합니다. 3) 전주 데이터와 비교 연산을 수행합니다. 4) Plotly를 활용해 대시보드 형태의 보고서를 출력합니다." [인터랙티브 대시보드 코드 생성]',
     analysis: '엔지니어가 데이터를 보는 관점(공간 분포)과 관리 지표(전주 대비 변화율)를 명확히 제시했습니다. AI는 단순 요약을 넘어 "분석 리포트"를 스스로 설계합니다.',
+    metrics: { action: 95, precision: 90, depth: 95 },
+    resultPreview: 'heatmap',
   },
 ];
+
+function MetricBar({ label, value, color }: { label: string, value: number, color: string }) {
+  return (
+    <div style={{ marginBottom: '0.8rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 900, marginBottom: '0.2rem' }}>
+        <span>{label}</span>
+        <span>{value}%</span>
+      </div>
+      <div style={{ height: '6px', background: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }}>
+        <motion.div 
+          initial={{ width: 0 }}
+          whileInView={{ width: `${value}%` }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          style={{ height: '100%', background: color }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ResultVisual({ type }: { type: string }) {
+  const styles: any = {
+    text: { icon: MessageSquare, label: '단순 텍스트', color: '#64748b' },
+    chart: { icon: Activity, label: '분석 차트', color: '#0071e3' },
+    question: { icon: AlertCircle, label: '역질문 발생', color: '#be123c' },
+    'time-series': { icon: Terminal, label: '시계열 분석', color: '#0071e3' },
+    list: { icon: FileText, label: '단순 목록', color: '#64748b' },
+    heatmap: { icon: Database, label: '인텔리전트 리포트', color: '#0071e3' },
+  };
+  const config = styles[type] || styles.text;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', padding: '0.5rem 0.8rem', background: '#f8fafc', borderRadius: '8px', border: `1px solid ${config.color}33` }}>
+      <config.icon size={16} color={config.color} />
+      <span style={{ fontSize: '0.8rem', fontWeight: 800, color: config.color }}>{config.label}</span>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -129,6 +178,7 @@ export default function App() {
                 <div className="prompt-box" style={{ minHeight: '120px' }}>
                   {item.prompt}
                 </div>
+                <ResultVisual type={item.resultPreview} />
                 <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: item.type === 'general' ? '#fff1f2' : '#f0fdf4', borderRadius: '12px', border: item.type === 'general' ? '1px solid #fecaca' : '1px solid #bbf7d0' }}>
                   <strong style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: item.type === 'general' ? '#be123c' : '#166534' }}>AI의 반응 (Response):</strong>
                   <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: '1.5' }}>{item.result}</p>
@@ -136,12 +186,19 @@ export default function App() {
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }}>
-                <h4 style={{ color: item.type === 'general' ? '#be123c' : '#15803d', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.2rem', fontWeight: 900 }}>
+                <h4 style={{ color: item.type === 'general' ? '#be123c' : '#15803d', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem' }}>
                   {item.type === 'general' ? <AlertCircle size={22} /> : <CheckCircle2 size={22} />}
-                  핵심 분석 (Core Analysis)
+                  품질 지표 (Vibe Score)
                 </h4>
-                <p style={{ marginTop: '1rem', fontWeight: 800, fontSize: '1.05rem', lineHeight: '1.4' }}>{item.analysis}</p>
-                <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: '#f8fafc', borderRadius: '16px', borderLeft: `4px solid ${item.type === 'general' ? '#64748b' : '#0071e3'}` }}>
+                
+                <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '20px', marginBottom: '1.5rem' }}>
+                  <MetricBar label="즉각 실행성 (Actionability)" value={item.metrics.action} color={item.type === 'general' ? '#64748b' : '#0071e3'} />
+                  <MetricBar label="분석 정밀도 (Precision)" value={item.metrics.precision} color={item.type === 'general' ? '#64748b' : '#0071e3'} />
+                  <MetricBar label="결과물 깊이 (Depth)" value={item.metrics.depth} color={item.type === 'general' ? '#64748b' : '#0071e3'} />
+                </div>
+
+                <p style={{ fontWeight: 800, fontSize: '1.05rem', lineHeight: '1.4' }}>{item.analysis}</p>
+                <div style={{ marginTop: '1rem', padding: '1.2rem', background: item.type === 'general' ? '#fff1f233' : '#f0f7ff', borderRadius: '16px', borderLeft: `4px solid ${item.type === 'general' ? '#64748b' : '#0071e3'}` }}>
                   <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: '1.6' }}>
                     {item.type === 'general' 
                       ? "엔지니어가 문제를 정의하지 않고 AI에게 정답을 요구하는 경우입니다. AI는 정보 부족으로 인해 원론적인 답변만 반복하며, 이는 곧 엔지니어의 시간 낭비로 이어집니다." 
@@ -157,7 +214,7 @@ export default function App() {
       {/* 02. TCREI Deep Dive */}
       <section>
         <span className="section-label">02. 프롬프트 기술: TCREI</span>
-        <h2>구글이 강조하는 <mark>프롬프트 5대 요소</mark></h2>
+        <h2><Brain size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 구글이 강조하는 <mark>프롬프트 5대 요소</mark></h2>
         <p className="section-intro">TCREI는 AI에게 주는 가장 완벽한 '작업지시서'의 뼈대입니다. 각 요소가 어떻게 AI의 답변 품질을 바꾸는지 상세히 분석해 보겠습니다.</p>
         
         <div className="technique-grid">
@@ -255,7 +312,7 @@ export default function App() {
       {/* 03. Pseudo-Prompt Expansion */}
       <section>
         <span className="section-label">03. 고급 기술: Pseudo-Prompt</span>
-        <h2>코딩 없이 <mark>로직을 설계</mark>하는 법</h2>
+        <h2><Terminal size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 코딩 없이 <mark>로직을 설계</mark>하는 법</h2>
         <p className="section-intro">
           슈도 프롬프트(Pseudo-Prompt)는 자연어와 프로그래밍 언어의 중간 형태입니다. 복잡한 문제를 단계별(Step-by-step)로 쪼개어 지시하면 AI가 훨씬 더 정교한 논리 구조를 가진 결과물을 만들어냅니다.
         </p>
