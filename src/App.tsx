@@ -7,13 +7,14 @@ import {
   Sparkles,
   Bot,
   Brain,
-  Code2,
   Database,
   Terminal,
   Activity,
   ArrowRight,
   CheckCircle2,
   AlertCircle,
+  Image,
+  Wrench,
 } from 'lucide-react';
 
 const lessonFlow = [
@@ -81,6 +82,19 @@ const promptComparison = [
   },
 ];
 
+const realExampleImages = [
+  {
+    title: '수율 로그 분석 대시보드',
+    image: 'https://heekeunlee.github.io/lecture01/vibe-coding.png',
+    caption: '라인별 수율 하락 구간을 차트와 요약 카드로 바꾸는 예시',
+  },
+  {
+    title: 'AOI 불량 이미지 리뷰',
+    image: 'https://heekeunlee.github.io/lecture01/traditional-coding.png',
+    caption: '검사 이미지와 불량 유형을 묶어 리뷰 우선순위를 정하는 예시',
+  },
+];
+
 function MetricBar({ label, value, color }: { label: string, value: number, color: string }) {
   return (
     <div style={{ marginBottom: '0.8rem' }}>
@@ -144,8 +158,8 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
           className="hero-section"
         >
-          <h1>바이브 코딩 2강:<br />의도를 결과로 바꾸는 <mark>프롬프트 설계</mark></h1>
-          <p className="subtitle">반도체·디스플레이·2차전지 공정 데이터를 요리하는 엔지니어의 작업지시서 작성법</p>
+          <h1>Ch.2 반복업무를 AI로 바꾸는 첫걸음</h1>
+          <p className="subtitle">반도체·디스플레이·2차전지 공정 데이터를 AI가 실행 가능한 작업지시서로 바꾸는 첫걸음</p>
           
           <div className="lesson-meta">
             <span>40분 집중</span>
@@ -417,6 +431,26 @@ export default function App() {
         </div>
       </section>
 
+      <section className="real-example-section">
+        <span className="section-label">05. 실제 예시 이미지</span>
+        <h2><Image size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 반복업무가 어떤 화면 결과물로 바뀌는지 먼저 보여줍니다</h2>
+        <p className="section-intro">
+          프롬프트는 문장 자체가 목적이 아니라, 현장의 반복 업무를 검토 가능한 화면과 보고서 초안으로 바꾸기 위한 입력입니다.
+          아래 예시는 수율 로그와 AOI 리뷰 업무가 AI 산출물로 전환되는 모습을 시각적으로 연결합니다.
+        </p>
+        <div className="real-example-grid">
+          {realExampleImages.map((item) => (
+            <article className="real-example-card" key={item.title}>
+              <img src={item.image} alt={item.title} />
+              <div>
+                <strong>{item.title}</strong>
+                <p>{item.caption}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section>
         <span className="section-label">강의 요약</span>
         <h2>오늘의 <mark>강의 흐름</mark></h2>
@@ -436,18 +470,34 @@ export default function App() {
         </div>
       </section>
 
-      <footer className="philosophy-section">
-        <h2><Sparkles size={32} style={{ marginBottom: '1rem' }} /><br />"프롬프트 설계는<br />엔지니어의 새로운 설계도입니다."</h2>
-        <p>복잡한 코드는 AI에게 맡기고, 여러분은 현장의 전문성을<br />논리적인 단계로 쪼개어 전달하는 것에 집중하세요.<br />그것이 바로 바이브 코딩의 본질입니다.</p>
-        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-          <Bot size={24} />
-          <Code2 size={24} />
-          <Database size={24} />
-          <FileText size={24} />
-          <MessageSquare size={24} />
-          <Zap size={24} />
+      <section className="closing-section">
+        <div className="wrap-message">
+          <Sparkles size={36} color="var(--accent)" />
+          <h3>"프롬프트 설계는 엔지니어의 새로운 설계도입니다."</h3>
+          <p>다음 강의: 반복 업무를 실제 자동화 흐름으로 확장합니다.</p>
         </div>
-      </footer>
+        <div className="next-lecture-preview">
+          <div>
+            <span>Next Lecture</span>
+            <strong>반복 업무 자동화 실전</strong>
+            <p>오늘 만든 작업지시서를 바탕으로 데이터 정리, 차트 생성, 보고서 초안을 한 번에 연결합니다.</p>
+          </div>
+          <ArrowRight size={26} />
+        </div>
+        <div className="professional-point">
+          <div className="highlight-box" style={{ background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '24px' }}>
+            <h3>Engineering Point</h3>
+            <p style={{ color: 'rgba(255,255,255,0.86)', marginTop: '1rem', fontSize: '1.1rem' }}>
+              AI가 만든 결과는 초안입니다. 데이터의 의미, 공정 기준, 최종 판단은 엔지니어가 검증해야 합니다.
+            </p>
+            <div className="point-strip">
+              <span><Bot size={16} /> 초안은 AI가 만듭니다</span>
+              <span><Wrench size={16} /> 기준은 엔지니어가 정합니다</span>
+              <span><CheckCircle2 size={16} /> 판단은 사람이 검증합니다</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <style>{`
         .bad { padding-left: 1.5rem; position: relative; color: #be123c; font-weight: 700; }

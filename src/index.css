@@ -130,9 +130,10 @@ section h2 {
 }
 
 section h2 mark {
-  background: linear-gradient(180deg, transparent 56%, #fef08a 56%);
+  background: rgba(0,113,227,0.1);
   color: inherit;
-  padding: 0 0.08em;
+  padding: 0 0.12em;
+  border-radius: 6px;
 }
 
 .section-label {
@@ -313,6 +314,139 @@ section h2 mark {
   color: var(--accent);
 }
 
+.real-example-section {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 4rem 0;
+}
+
+.real-example-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.real-example-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 12px 34px rgba(15,23,42,0.06);
+}
+
+.real-example-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #eef2f7;
+}
+
+.real-example-card div {
+  padding: 1.2rem;
+}
+
+.real-example-card strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin-bottom: 0.4rem;
+}
+
+.real-example-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.closing-section {
+  margin-top: 4rem;
+}
+
+.wrap-message {
+  border: 1px solid rgba(0,113,227,0.22);
+  background: #f0f7ff;
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.wrap-message h3 {
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  font-weight: 900;
+  line-height: 1.25;
+  margin: 1rem auto 0.7rem;
+  word-break: keep-all;
+}
+
+.wrap-message p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.next-lecture-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  margin-top: 1.5rem;
+  background: #ffffff;
+}
+
+.next-lecture-preview span {
+  display: block;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+
+.next-lecture-preview strong {
+  display: block;
+  font-size: 1.45rem;
+  font-weight: 900;
+  margin-bottom: 0.45rem;
+}
+
+.next-lecture-preview p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.professional-point {
+  margin-top: 1.5rem;
+}
+
+.highlight-box {
+  border-left: 6px solid var(--accent);
+  padding: 2rem;
+}
+
+.point-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.point-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  color: white;
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
 footer.philosophy-section {
   background: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%);
   color: white;
@@ -339,5 +473,14 @@ footer.philosophy-section p {
 @media (max-width: 768px) {
   .prompt-compare-grid {
     grid-template-columns: 1fr;
+  }
+
+  .real-example-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .next-lecture-preview {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
