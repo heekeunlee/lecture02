@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import yieldDashboardExample from './assets/yield-dashboard-example.png';
+import aoiReviewExample from './assets/aoi-review-example.png';
 import {
   Zap,
   Target,
@@ -15,6 +17,7 @@ import {
   AlertCircle,
   Image,
   Wrench,
+  type LucideIcon,
 } from 'lucide-react';
 
 const lessonFlow = [
@@ -85,12 +88,12 @@ const promptComparison = [
 const realExampleImages = [
   {
     title: '수율 로그 분석 대시보드',
-    image: 'https://heekeunlee.github.io/lecture01/vibe-coding.png',
+    image: yieldDashboardExample,
     caption: '라인별 수율 하락 구간을 차트와 요약 카드로 바꾸는 예시',
   },
   {
     title: 'AOI 불량 이미지 리뷰',
-    image: 'https://heekeunlee.github.io/lecture01/traditional-coding.png',
+    image: aoiReviewExample,
     caption: '검사 이미지와 불량 유형을 묶어 리뷰 우선순위를 정하는 예시',
   },
 ];
@@ -115,7 +118,7 @@ function MetricBar({ label, value, color }: { label: string, value: number, colo
 }
 
 function ResultVisual({ type }: { type: string }) {
-  const styles: any = {
+  const styles: Record<string, { icon: LucideIcon; label: string; color: string }> = {
     text: { icon: MessageSquare, label: '단순 텍스트', color: '#64748b' },
     chart: { icon: Activity, label: '분석 차트', color: '#0071e3' },
     question: { icon: AlertCircle, label: '역질문 발생', color: '#be123c' },
