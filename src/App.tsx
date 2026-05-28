@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-import yieldDashboardExample from './assets/yield-dashboard-example.png';
-import aoiReviewExample from './assets/aoi-review-example.png';
 import {
   Zap,
   Target,
@@ -17,6 +15,11 @@ import {
   AlertCircle,
   Image,
   Wrench,
+  Layers,
+  Gauge,
+  Table2,
+  Mail,
+  Workflow,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -85,18 +88,315 @@ const promptComparison = [
   },
 ];
 
-const realExampleImages = [
+const learningGoals = [
   {
-    title: '수율 로그 분석 대시보드',
-    image: yieldDashboardExample,
-    caption: '라인별 수율 하락 구간을 차트와 요약 카드로 바꾸는 예시',
+    title: '엔지니어형 프롬프트로 전환',
+    body: '막연한 요청을 공정, 인자, 기준, 결과물 형식이 포함된 실행 지시로 바꿉니다.',
+    icon: Target,
   },
   {
-    title: 'AOI 불량 이미지 리뷰',
-    image: aoiReviewExample,
-    caption: '검사 이미지와 불량 유형을 묶어 리뷰 우선순위를 정하는 예시',
+    title: 'TCREI 5요소 분해',
+    body: 'Task, Context, Role, Exemplar, Input을 각각 어떤 화면 결과로 바꾸는지 확인합니다.',
+    icon: Brain,
+  },
+  {
+    title: '슈도프롬프트 설계',
+    body: '변수, 단계, 조건문으로 AI가 따라야 할 분석 로직을 안정적으로 고정합니다.',
+    icon: Workflow,
   },
 ];
+
+const tcreiExamples = [
+  {
+    key: 'T',
+    title: 'Task',
+    subtitle: '무엇을 수행할지',
+    bad: '"데이터 분석해줘"',
+    good: '"이상 구간 탐지 후 원인 인자를 순위별로 도출해줘"',
+    output: '탐지 → 원인 후보 → 우선순위',
+    icon: Target,
+  },
+  {
+    key: 'C',
+    title: 'Context',
+    subtitle: '왜 필요한 분석인지',
+    bad: '"공정 데이터야"',
+    good: '"수율이 3% 급락한 신규 라인의 챔버 안정화 단계 데이터야"',
+    output: '신규 라인 안정화 이슈로 범위 축소',
+    icon: Layers,
+  },
+  {
+    key: 'R',
+    title: 'Role',
+    subtitle: '어떤 관점으로 볼지',
+    bad: '없음',
+    good: '"15년차 데이터 분석 전문 공정 엔지니어처럼 행동해줘"',
+    output: 'SPC, UCL, 설비 원인 후보를 우선 검토',
+    icon: Gauge,
+  },
+  {
+    key: 'E',
+    title: 'Exemplar',
+    subtitle: '어떤 형태로 낼지',
+    bad: '없음',
+    good: '"결과는 [시간 - 설비 - 이상항목 - 조치권고] 표로 만들어줘"',
+    output: '회의용 표 구조로 바로 정리',
+    icon: Table2,
+  },
+  {
+    key: 'I',
+    title: 'Input',
+    subtitle: '데이터와 제약',
+    bad: '없음',
+    good: '"CSV 파일 로드, 비어있는 값은 0으로 처리, 단위는 마이크론"',
+    output: '결측치와 단위 해석 오류 감소',
+    icon: Database,
+  },
+];
+
+const supportVisuals = [
+  {
+    title: '프롬프트 컴파일러',
+    caption: '막연한 요청을 TCREI 요소로 분해하면 AI가 어떤 분석 산출물을 만들어야 하는지 명확해집니다.',
+    type: 'compiler',
+  },
+  {
+    title: '엔지니어 검증 루프',
+    caption: 'AI 결과를 그대로 쓰지 않고, 기준값과 현장 맥락으로 검증한 뒤 다음 지시로 다시 연결합니다.',
+    type: 'review',
+  },
+];
+
+function CaseResultVisual({ type }: { type: string }) {
+  if (type === 'chart') {
+    return (
+      <div className="case-output-visual chart-preview">
+        <div className="visual-header">
+          <span>AI Visualization</span>
+          <strong>PR Viscosity vs Yield</strong>
+        </div>
+        <div className="scatter-board">
+          {[18, 25, 32, 38, 45, 52, 60, 68, 75, 82].map((x, index) => (
+            <i
+              key={x}
+              style={{
+                left: `${x}%`,
+                bottom: `${72 - index * 5 + (index % 2) * 8}%`,
+                background: x > 54 ? '#ef4444' : '#0071e3',
+              }}
+            />
+          ))}
+          <em className="threshold-line">15cp</em>
+        </div>
+        <div className="visual-stat-row">
+          <b>-4.8%</b>
+          <span>15cp 초과 구간 평균 수율 저하</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === 'time-series') {
+    const bars = [42, 45, 51, 72, 48, 44, 77, 49, 46, 74, 50, 45];
+    return (
+      <div className="case-output-visual chart-preview">
+        <div className="visual-header">
+          <span>AI Visualization</span>
+          <strong>Pressure Hunting Detection</strong>
+        </div>
+        <div className="wave-board">
+          {bars.map((height, index) => (
+            <i key={index} style={{ height: `${height}%` }} className={height > 68 ? 'alert' : ''} />
+          ))}
+        </div>
+        <div className="visual-stat-row">
+          <b>60s</b>
+          <span>반복 주기 감지, MFC 유량과 병합</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === 'heatmap') {
+    return (
+      <div className="case-output-visual chart-preview">
+        <div className="visual-header">
+          <span>AI Visualization</span>
+          <strong>Glass Defect Heatmap</strong>
+        </div>
+        <div className="heatmap-board">
+          {Array.from({ length: 48 }).map((_, index) => {
+            const hot = [5, 6, 13, 14, 21, 28, 35, 42].includes(index);
+            const mid = [10, 18, 26, 31, 37, 44].includes(index);
+            return <i key={index} className={hot ? 'hot' : mid ? 'mid' : ''} />;
+          })}
+        </div>
+        <div className="visual-stat-row">
+          <b>Edge 36%</b>
+          <span>Mura/Dot 위치별 집중 영역 식별</span>
+        </div>
+      </div>
+    );
+  }
+
+  const labels: Record<string, string> = {
+    text: '일반론과 역질문 중심',
+    question: '증상과 로그 형식 재질문',
+    list: '데이터 입력을 다시 요구',
+  };
+
+  return (
+    <div className="case-output-visual weak-preview">
+      <div className="visual-header">
+        <span>AI Output</span>
+        <strong>{labels[type] || '모호한 결과'}</strong>
+      </div>
+      <div className="weak-lines">
+        <i />
+        <i />
+        <i />
+      </div>
+      <div className="visual-stat-row muted">
+        <b>?</b>
+        <span>기준과 출력 형식이 없어 대화가 반복됨</span>
+      </div>
+    </div>
+  );
+}
+
+function TcreiVisual({ item }: { item: typeof tcreiExamples[number] }) {
+  const Icon = item.icon;
+  return (
+    <article className="tcrei-visual-card">
+      <div className="tcrei-letter">{item.key}</div>
+      <div className="tcrei-body">
+        <div className="visual-header">
+          <span>{item.subtitle}</span>
+          <strong><Icon size={16} /> {item.title}</strong>
+        </div>
+        <div className="before-after-mini">
+          <p className="bad-line">{item.bad}</p>
+          <ArrowRight size={16} />
+          <p className="good-line">{item.good}</p>
+        </div>
+        <div className="tcrei-output">
+          <CheckCircle2 size={16} />
+          <span>{item.output}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function PseudoPromptVisual() {
+  const rows = [
+    ['04-24', 'Photo', '93.1%', '-1.7%', 'Watch'],
+    ['04-25', 'Etch', '91.8%', '-3.2%', 'Mail'],
+    ['04-26', 'Array', '92.6%', '-2.4%', 'Mail'],
+  ];
+
+  return (
+    <div className="pseudo-visual-lab">
+      <div className="visual-header">
+        <span>Pseudo-Prompt Result</span>
+        <strong><Mail size={16} /> HTML 보고 메일 자동 초안</strong>
+      </div>
+      <div className="pseudo-flow">
+        <span>Load CSV</span>
+        <ArrowRight size={15} />
+        <span>Yield &lt; 94%</span>
+        <ArrowRight size={15} />
+        <span>Extract Columns</span>
+        <ArrowRight size={15} />
+        <span>Mail Draft</span>
+      </div>
+      <table className="result-table">
+        <thead>
+          <tr>
+            <th>날짜</th>
+            <th>공정</th>
+            <th>수율</th>
+            <th>전일대비</th>
+            <th>액션</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.join('-')} className={row[4] === 'Mail' ? 'warn' : ''}>
+              {row.map((cell) => <td key={cell}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mail-preview">
+        <strong>품질혁신 파트장님,</strong>
+        <p>94.0% 미만 구간 2건이 확인되었습니다. Etch 공정의 전일 대비 -3.2% 하락 건을 우선 확인 권고드립니다.</p>
+      </div>
+    </div>
+  );
+}
+
+function SupportVisualCard({ item }: { item: typeof supportVisuals[number] }) {
+  if (item.type === 'compiler') {
+    return (
+      <article className="real-example-card concept-card">
+        <div className="compiler-visual" aria-label="TCREI 프롬프트 컴파일러 도식">
+          <div className="compiler-input">
+            <span>Raw Request</span>
+            <strong>수율 분석해줘</strong>
+          </div>
+          <div className="compiler-stack">
+            {['Task', 'Context', 'Role', 'Exemplar', 'Input'].map((label) => (
+              <i key={label}>{label}</i>
+            ))}
+          </div>
+          <div className="compiler-output">
+            <span>AI Output</span>
+            <div className="output-mini-grid">
+              <b>Scatter</b>
+              <b>Table</b>
+              <b>HTML</b>
+            </div>
+          </div>
+        </div>
+        <div>
+          <strong>{item.title}</strong>
+          <p>{item.caption}</p>
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <article className="real-example-card concept-card">
+      <div className="review-loop-visual" aria-label="AI 결과 검증 루프 도식">
+        <div className="loop-node engineer">
+          <Wrench size={18} />
+          <span>기준 설정</span>
+        </div>
+        <ArrowRight size={18} />
+        <div className="loop-node ai">
+          <Bot size={18} />
+          <span>초안 생성</span>
+        </div>
+        <ArrowRight size={18} />
+        <div className="loop-node verify">
+          <CheckCircle2 size={18} />
+          <span>현장 검증</span>
+        </div>
+        <div className="loop-dashboard">
+          <div><span>Spec</span><b>94.0%</b></div>
+          <div><span>Risk</span><b>PM 이력</b></div>
+          <div><span>Next</span><b>재분석</b></div>
+        </div>
+      </div>
+      <div>
+        <strong>{item.title}</strong>
+        <p>{item.caption}</p>
+      </div>
+    </article>
+  );
+}
 
 function MetricBar({ label, value, color }: { label: string, value: number, color: string }) {
   return (
@@ -172,9 +472,30 @@ export default function App() {
         </motion.div>
       </header>
 
+      <section className="teaching-section learning-goal-section">
+        <span className="section-label">01. 오프닝 및 학습목표</span>
+        <h2><Target size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 오늘은 <mark>좋은 작업지시서</mark>를 화면 결과물로 바꾸는 법을 배웁니다</h2>
+        <p className="section-intro">
+          1강에서 배운 "의도를 정의하라"를 더 실무적인 형식으로 확장합니다. 이번 강의의 목표는 프롬프트 문장을 잘 쓰는 데서 끝나지 않고,
+          AI가 산점도, 이상 탐지 차트, 히트맵, 보고서 초안까지 만들도록 지시 구조를 설계하는 것입니다.
+        </p>
+        <div className="goal-card-grid">
+          {learningGoals.map((goal) => {
+            const Icon = goal.icon;
+            return (
+              <article className="goal-card" key={goal.title}>
+                <Icon size={22} />
+                <strong>{goal.title}</strong>
+                <p>{goal.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
       {/* 01. Mindset Expansion */}
-      <section>
-        <span className="section-label">01. 마인드셋 비교</span>
+      <section className="teaching-section">
+        <span className="section-label">02. 마인드셋 비교</span>
         <h2><Zap size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 엔지니어의 언어가 <mark>결과의 차이</mark>를 만듭니다</h2>
         <p className="section-intro">
           같은 의도를 가지고 있어도, 일반적인 대화형 프롬프트와 엔지니어링 프롬프트는 AI가 생성하는 결과물의 품질에서 하늘과 땅 차이를 보입니다.
@@ -190,7 +511,7 @@ export default function App() {
               viewport={{ once: true }}
               style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '3rem' }}
             >
-              <div className={`prompt-card ${item.type === 'general' ? 'general' : 'engineering'}`} style={{ height: '100%' }}>
+              <div className={`prompt-card ${item.type === 'general' ? 'general' : 'engineering'}`} style={{ alignSelf: 'start' }}>
                 <span>{item.type === 'engineering' ? <Target size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} /> : <MessageSquare size={18} style={{ verticalAlign: 'middle', marginRight: '0.4rem' }} />}{item.title} - {item.type === 'general' ? '일반 프롬프트' : '엔지니어 프롬프트'}</span>
                 <div className="prompt-box" style={{ minHeight: '120px' }}>
                   {item.prompt}
@@ -222,6 +543,7 @@ export default function App() {
                       : "엔지니어가 '도메인 지식'을 활용해 분석의 조건과 목적을 명확히 정의했습니다. AI는 엔지니어의 두뇌를 빌려 실제 동작하는 '솔루션'을 즉각적으로 도출해냅니다."}
                   </p>
                 </div>
+                <CaseResultVisual type={item.resultPreview} />
               </div>
             </motion.div>
           ))}
@@ -229,52 +551,13 @@ export default function App() {
       </section>
 
       {/* 02. TCREI Deep Dive */}
-      <section>
-        <span className="section-label">02. 프롬프트 기술: TCREI</span>
+      <section className="teaching-section">
+        <span className="section-label">03. 프롬프트 기술: TCREI</span>
         <h2><Brain size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 구글이 강조하는 <mark>프롬프트 5대 요소</mark></h2>
         <p className="section-intro">TCREI는 AI에게 주는 가장 완벽한 '작업지시서'의 뼈대입니다. 각 요소가 어떻게 AI의 답변 품질을 바꾸는지 상세히 분석해 보겠습니다.</p>
         
-        <div className="technique-grid">
-          <div className="technique-card">
-            <h4>Task (작업)</h4>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>AI가 수행해야 할 구체적인 행동</p>
-            <ul>
-              <li className="bad">"데이터 분석해줘" (모호함)</li>
-              <li className="good">"이상 구간 탐지 후 원인 인자를 순위별로 도출해줘" (구체적)</li>
-            </ul>
-          </div>
-          <div className="technique-card">
-            <h4>Context (맥락)</h4>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>프로젝트의 배경과 목표</p>
-            <ul>
-              <li className="bad">"공정 데이터야"</li>
-              <li className="good">"수율이 3% 급락한 신규 라인의 챔버 안정화 단계 데이터야"</li>
-            </ul>
-          </div>
-          <div className="technique-card">
-            <h4>Role (역할)</h4>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>AI에게 부여하는 전문적인 페르소나</p>
-            <ul>
-              <li className="bad">없음</li>
-              <li className="good">"15년차 데이터 분석 전문 공정 엔지니어처럼 행동해줘"</li>
-            </ul>
-          </div>
-          <div className="technique-card">
-            <h4>Exemplar (예시)</h4>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>원하는 결과물의 구체적인 예시</p>
-            <ul>
-              <li className="bad">없음</li>
-              <li className="good">"결과는 [시간 - 설비 - 이상항목 - 조치권고] 형태의 표로 만들어줘"</li>
-            </ul>
-          </div>
-          <div className="technique-card">
-            <h4>Input (입력)</h4>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>데이터의 형식, 제약 사항 등</p>
-            <ul>
-              <li className="bad">없음</li>
-              <li className="good">"CSV 파일 로드, 비어있는 값은 0으로 처리, 단위는 마이크론"</li>
-            </ul>
-          </div>
+        <div className="tcrei-visual-grid">
+          {tcreiExamples.map((item) => <TcreiVisual item={item} key={item.key} />)}
         </div>
 
         <div className="deep-dive" style={{ marginTop: '3rem' }}>
@@ -327,8 +610,8 @@ export default function App() {
       </section>
 
       {/* 03. Pseudo-Prompt Expansion */}
-      <section>
-        <span className="section-label">03. 고급 기술: Pseudo-Prompt</span>
+      <section className="teaching-section">
+        <span className="section-label">04. 고급 기술: Pseudo-Prompt</span>
         <h2><Terminal size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 코딩 없이 <mark>로직을 설계</mark>하는 법</h2>
         <p className="section-intro">
           슈도 프롬프트(Pseudo-Prompt)는 자연어와 프로그래밍 언어의 중간 형태입니다. 복잡한 문제를 단계별(Step-by-step)로 쪼개어 지시하면 AI가 훨씬 더 정교한 논리 구조를 가진 결과물을 만들어냅니다.
@@ -367,6 +650,7 @@ export default function App() {
             <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: '#f0f7ff', borderRadius: '12px', borderLeft: '4px solid #0071e3' }}>
               <strong>AI의 반응:</strong> "지시하신 로직에 따라 스크립트를 작성합니다. 1) 수율 기준 94% 미만 데이터를 완벽히 추출하는 Python 코드를 생성했습니다. 2) 보고용 HTML 메일 양식을 깔끔하게 제작했습니다. 데이터를 주시면 바로 실행하겠습니다." (명확하고 실행 가능한 답변)
             </div>
+            <PseudoPromptVisual />
           </div>
         </div>
 
@@ -392,7 +676,7 @@ export default function App() {
       {/* 04. Case Study Expansion */}
       <section className="deep-dive">
         <div className="deep-dive-heading">
-          <span className="section-label">04. 실전 사례 심화</span>
+          <span className="section-label">05. 실전 사례 심화</span>
           <h3>디스플레이 패널 검사: 불량 패턴의 시각화</h3>
           <p>단순히 "분석해줘"라고 했을 때와, 엔지니어링 프롬프트를 사용했을 때의 결과물 차이를 봅니다.</p>
         </div>
@@ -435,22 +719,14 @@ export default function App() {
       </section>
 
       <section className="real-example-section">
-        <span className="section-label">05. 실제 예시 이미지</span>
+        <span className="section-label">06. 실제 예시 이미지</span>
         <h2><Image size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} /> 반복업무가 어떤 화면 결과물로 바뀌는지 먼저 보여줍니다</h2>
         <p className="section-intro">
           프롬프트는 문장 자체가 목적이 아니라, 현장의 반복 업무를 검토 가능한 화면과 보고서 초안으로 바꾸기 위한 입력입니다.
           아래 예시는 수율 로그와 AOI 리뷰 업무가 AI 산출물로 전환되는 모습을 시각적으로 연결합니다.
         </p>
         <div className="real-example-grid">
-          {realExampleImages.map((item) => (
-            <article className="real-example-card" key={item.title}>
-              <img src={item.image} alt={item.title} />
-              <div>
-                <strong>{item.title}</strong>
-                <p>{item.caption}</p>
-              </div>
-            </article>
-          ))}
+          {supportVisuals.map((item) => <SupportVisualCard item={item} key={item.title} />)}
         </div>
       </section>
 
