@@ -245,16 +245,56 @@ function CaseResultVisual({ type }: { type: string }) {
     list: '데이터 입력을 다시 요구',
   };
 
+  const mockResponses: Record<string, React.ReactNode> = {
+    text: (
+      <div className="unwanted-response">
+        <p className="response-bubble">
+          "수율 하락 원인은 장비 유지보수 지연, 원자재 오염 등이 있습니다. <strong>어떤 장비 데이터를 볼까요?</strong>"
+        </p>
+        <ul className="unwanted-reasons">
+          <li>원인 분석 없이 일반론만 나열</li>
+          <li>분석을 위한 대상/기준을 사용자에게 되물음</li>
+        </ul>
+      </div>
+    ),
+    question: (
+      <div className="unwanted-response">
+        <p className="response-bubble">
+          "장비의 어떤 증상이 있나요? <strong>에러 코드나 로그 파일 형식을 알려주세요.</strong>"
+        </p>
+        <ul className="unwanted-reasons">
+          <li>장비 이상에 대한 진단 불가</li>
+          <li>엔지니어에게 데이터 분석을 위한 전제 조건 재요구</li>
+        </ul>
+      </div>
+    ),
+    list: (
+      <div className="unwanted-response">
+        <p className="response-bubble">
+          "불량 유형별 개수와 비중을 알려주시면 보고서 초안을 작성하겠습니다. <strong>포함할 결론이 있나요?</strong>"
+        </p>
+        <ul className="unwanted-reasons">
+          <li>단순 텍스트 포맷팅 수준에 불과</li>
+          <li>인사이트 도출 없이 구조화된 양식만 요구</li>
+        </ul>
+      </div>
+    ),
+  };
+
   return (
     <div className="case-output-visual weak-preview">
       <div className="visual-header">
         <span>AI Output</span>
         <strong>{labels[type] || '모호한 결과'}</strong>
       </div>
-      <div className="weak-lines">
-        <i />
-        <i />
-        <i />
+      <div className="weak-lines-container">
+        {mockResponses[type] || (
+          <div className="weak-lines">
+            <i />
+            <i />
+            <i />
+          </div>
+        )}
       </div>
       <div className="visual-stat-row muted">
         <b>?</b>
